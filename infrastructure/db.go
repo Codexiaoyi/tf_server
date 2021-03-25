@@ -1,5 +1,0 @@
-package infrastructure
-
-func InitDbContext() {
-
-}
