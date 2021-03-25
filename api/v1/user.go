@@ -14,7 +14,7 @@ func AddUser(c *gin.Context) {
 	var data model.User
 	_ = c.ShouldBindJSON(&data)
 
-	result := repository.CreateUser(&data)
+	result := repository.AddUser(&data)
 
 	if result {
 		c.JSON(
