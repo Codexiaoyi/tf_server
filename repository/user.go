@@ -5,35 +5,28 @@ import (
 )
 
 //新增用户
-func AddUser(data *model.User) bool {
+func AddUser(data *model.User) error {
 	err := db.Create(&data).Error
-	return err == nil
+	return err
 }
 
 //查询用户
-func QueryUserByEmail(email string) (model.User, bool) {
+func QueryUserByEmail(email string) (model.User, error) {
 	var user model.User
 	err := db.Limit(1).Where("email = ?", email).Find(&user).Error
-	if err != nil {
-		return user, false
-	}
-	return user, true
+	return user, err
 }
 
 //更新用户信息
-func UpdateUser(id int, data *model.User) bool {
+func UpdateUser(id int, data *model.User) error {
 	var user model.User
 
-	err = db.Model(&user).Updates(map[string]interface{}{
+	err = db.Model(&user).Where("ID = ?", user.ID).Updates(map[string]interface{}{
 		"username": data.UserName,
 		"gender":   data.Gender,
 		"email":    data.Email,
 		"avatar":   data.Avatar,
 	}).Error
 
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err
 }

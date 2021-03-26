@@ -10,11 +10,14 @@ import (
 func InitRouter() *gin.Engine {
 	gin.SetMode(util.AppMode)
 	r := gin.Default()
-
 	routerV1 := r.Group("api/v1")
 	{
+		//账号模块
+		routerV1.POST("account/register", v1.Register)
+		routerV1.POST("account/login", v1.Login)
 		//用户模块接口
-		routerV1.POST("user/add", v1.AddUser)
+		routerV1.POST("user/info/get", v1.GetUserInfo)
+		routerV1.POST("user/info/update", v1.UpdateUserInfo)
 	}
 
 	return r
