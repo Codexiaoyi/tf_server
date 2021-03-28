@@ -18,6 +18,6 @@ func QueryPasswordByEmail(email string) (string, error) {
 //检查账户是否存在
 func CheckAccount(email string) bool {
 	var account model.Account
-	db.Select("id").Where("username = ?", email).First(&account)
+	db.Select("id").Where("email = ?", email).First(&account)
 	return account.ID > 0
 }

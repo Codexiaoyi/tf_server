@@ -51,5 +51,9 @@ func Login(c *gin.Context) {
 		status = errmsg.ERROR_PASSWORD_ERROR
 	}
 
+	if password == account.Password {
+		status = errmsg.SUCCESS
+	}
+
 	response.Response(c, status)
 }

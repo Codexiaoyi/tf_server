@@ -3,6 +3,7 @@ module tfserver
 go 1.15
 
 require (
+	github.com/Codexiaoyi/go-mapper v1.0.0 // indirect
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/gin-gonic/gin v1.6.3

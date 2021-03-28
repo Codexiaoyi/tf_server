@@ -18,14 +18,14 @@ func QueryUserByEmail(email string) (model.User, error) {
 }
 
 //更新用户信息
-func UpdateUser(id int, data *model.User) error {
-	var user model.User
+func UpdateUser(id int, user *model.User) error {
 
 	err = db.Model(&user).Where("ID = ?", user.ID).Updates(map[string]interface{}{
-		"username": data.UserName,
-		"gender":   data.Gender,
-		"email":    data.Email,
-		"avatar":   data.Avatar,
+		"user_name": user.UserName,
+		"gender":    user.Gender,
+		"email":     user.Email,
+		"avatar":    user.Avatar,
+		"year":      user.Year,
 	}).Error
 
 	return err

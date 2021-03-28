@@ -7,6 +7,7 @@ import (
 	"tfserver/util/errmsg"
 	"tfserver/util/response"
 
+	"github.com/Codexiaoyi/go-mapper"
 	"github.com/gin-gonic/gin"
 )
 
@@ -36,10 +37,14 @@ func UpdateUserInfo(c *gin.Context) {
 	//先查询用户是否存在
 	user, err := repository.QueryUserByEmail(command.Email)
 	if err == nil && user.ID > 0 {
-		updateErr := repository.UpdateUser(int(user.ID), &user)
-		if updateErr == nil {
-			//更新成功
-			status = errmsg.SUCCESS
+		//用户存在
+		mapErr := mapper.StructMapByFieldName(&command, &user)
+		if mapErr == nil {
+			updateErr := repository.UpdateUser(int(user.ID), &user)
+			if updateErr == nil {
+				//更新成功
+				status = errmsg.SUCCESS
+			}
 		}
 	} else {
 		//用户不存在，不更新
