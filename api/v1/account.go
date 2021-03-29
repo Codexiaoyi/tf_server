@@ -4,6 +4,7 @@ import (
 	"tfserver/model"
 	"tfserver/repository"
 	"tfserver/util/errmsg"
+	"tfserver/util/jwt"
 	"tfserver/util/response"
 
 	"github.com/gin-gonic/gin"
@@ -52,7 +53,15 @@ func Login(c *gin.Context) {
 	}
 
 	if password == account.Password {
-		status = errmsg.SUCCESS
+		//成功登录颁发token
+		data := make(map[string]interface{})
+		token, err := jwt.GetToken(account.Email)
+		if err == nil {
+			data["token"] = token
+			status = errmsg.SUCCESS
+			response.ResponseWithData(c, status, data)
+			return
+		}
 	}
 
 	response.Response(c, status)
