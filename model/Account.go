@@ -6,6 +6,6 @@ import "gorm.io/gorm"
 type Account struct {
 	gorm.Model
 	Email    string `gorm:"type:varchar(30)" json:"email"`
-	Password string `gorm:"type:varchar(20)" json:"password"`
+	Password string `gorm:"type:varchar(100)" json:"password"`
 	Role     int    `gorm:"type:int" json:"role"`
 }

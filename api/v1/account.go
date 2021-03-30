@@ -8,6 +8,7 @@ import (
 	"tfserver/util/response"
 
 	"github.com/gin-gonic/gin"
+	"gopkg.in/hlandau/passlib.v1"
 )
 
 //注册接口
@@ -18,6 +19,11 @@ func Register(c *gin.Context) {
 	status := errmsg.ERROR
 	isExist := repository.CheckAccount(account.Email)
 	if !isExist {
+		hash, err := passlib.Hash(account.Password)
+		if err == nil {
+			//hash成功
+			account.Password = hash
+		}
 		//账号不存在，添加新账号
 		repository.AddAccount(&account)
 		//添加默认账户信息
@@ -46,13 +52,12 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	password, err := repository.QueryPasswordByEmail(account.Email)
-	if err != nil || password != account.Password {
+	newAccount, err := repository.QueryAccountByEmail(account.Email)
+	_, hashErr := passlib.Verify(account.Password, newAccount.Password)
+	if err != nil || hashErr != nil {
 		//密码错误
 		status = errmsg.ERROR_PASSWORD_ERROR
-	}
-
-	if password == account.Password {
+	} else {
 		//成功登录颁发token
 		data := make(map[string]interface{})
 		token, err := jwt.GetToken(account.Email)

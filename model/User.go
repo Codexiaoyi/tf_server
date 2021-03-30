@@ -16,14 +16,14 @@ type User struct {
 
 //生日
 type Birthday struct {
-	Year  int
-	Month int
-	Day   int
+	Year  int `gorm:"type:int" json:"year"`
+	Month int `gorm:"type:int" json:"month"`
+	Day   int `gorm:"type:int" json:"day"`
 }
 
 //住址
 type Address struct {
-	Province string
-	City     string
-	Street   string
+	Province string `gorm:"type:varchar(25)" json:"province"`
+	City     string `gorm:"type:varchar(25)" json:"city"`
+	Street   string `gorm:"type:varchar(25)" json:"street"`
 }
