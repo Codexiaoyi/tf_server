@@ -19,10 +19,15 @@ func GetUserInfo(c *gin.Context) {
 
 	user, err := repository.QueryUserByEmail(query.Email)
 	if err == nil {
-		data := make(map[string]interface{})
-		data["user"] = user
-		response.ResponseWithData(c, status, data)
-		return
+		if user.Email != "" && user.Email == query.Email {
+			data := make(map[string]interface{})
+			data["user"] = user
+			status = errmsg.SUCCESS
+			response.ResponseWithData(c, status, data)
+			return
+		} else {
+			status = errmsg.ERROR_USER_NOT_EXIST
+		}
 	}
 
 	response.Response(c, status)
