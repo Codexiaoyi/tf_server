@@ -38,7 +38,7 @@ func CreateNewTeam(team *model.Team) error {
 		//添加创建人为默认成员
 		err = tx.Create(&model.Member{
 			TeamId:   int(team.ID),
-			Email:    team.Create,
+			Email:    team.Email,
 			IsLeader: true,
 		}).Error
 		return err
