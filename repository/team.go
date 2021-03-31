@@ -46,5 +46,19 @@ func CreateNewTeam(team *model.Team) error {
 }
 
 //添加成员
+func AddMember(member *model.Member) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		return tx.Create(&member).Error
+	})
+}
 
 //更新团队信息
+func UpdateTeamInfo(team *model.Team) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		return tx.Model(&team).Where("ID = ?", team.ID).Updates(map[string]interface{}{
+			"team_name":    team.TeamName,
+			"avatar":       team.Avatar,
+			"introduction": team.Introduction,
+		}).Error
+	})
+}

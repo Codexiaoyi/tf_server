@@ -5,6 +5,7 @@ import (
 	"tfserver/application/query"
 	"tfserver/repository"
 	"tfserver/util/errmsg"
+	"tfserver/util/log"
 	"tfserver/util/response"
 
 	"github.com/Codexiaoyi/go-mapper"
@@ -50,6 +51,8 @@ func UpdateUserInfo(c *gin.Context) {
 				//更新成功
 				status = errmsg.SUCCESS
 			}
+		} else {
+			log.ErrorLog("Dto map failed!", mapErr.Error())
 		}
 	} else {
 		//用户不存在，不更新

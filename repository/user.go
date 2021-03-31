@@ -16,7 +16,7 @@ func QueryUserByEmail(email string) (model.User, error) {
 //更新用户信息
 func UpdateUser(id int, user *model.User) error {
 	return BeginTransaction(db, func(tx *gorm.DB) error {
-		err := tx.Model(&user).Where("ID = ?", user.ID).Updates(map[string]interface{}{
+		return tx.Model(&user).Where("ID = ?", user.ID).Updates(map[string]interface{}{
 			"user_name": user.UserName,
 			"gender":    user.Gender,
 			"email":     user.Email,
@@ -28,6 +28,5 @@ func UpdateUser(id int, user *model.User) error {
 			"city":      user.City,
 			"street":    user.Street,
 		}).Error
-		return err
 	})
 }

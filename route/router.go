@@ -4,6 +4,7 @@ import (
 	v1 "tfserver/api/v1"
 	"tfserver/middleware"
 	"tfserver/util"
+	"tfserver/util/log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,6 +21,9 @@ func InitRouter() *gin.Engine {
 		routerV1.POST("user/info/get", middleware.JwtMiddleware(), v1.GetUserInfo)
 		routerV1.POST("user/info/update", middleware.JwtMiddleware(), v1.UpdateUserInfo)
 	}
+
+	//注册zap日志框架的中间件
+	r.Use(log.GinLogger(), log.GinRecovery(true))
 
 	return r
 }

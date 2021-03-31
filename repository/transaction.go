@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"tfserver/util/log"
+
 	"gorm.io/gorm"
 )
 
@@ -23,6 +25,8 @@ func BeginTransaction(db *gorm.DB, process func(tx *gorm.DB) error) error {
 		tx.Rollback()
 		return err
 	}
+	err = tx.Commit().Error
 
-	return tx.Commit().Error
+	log.ErrorLog("Transaction error:", err.Error())
+	return err
 }

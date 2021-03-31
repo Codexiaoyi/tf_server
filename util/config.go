@@ -18,7 +18,17 @@ var (
 	DbUser     string
 	DbPassword string
 	DbName     string
+
+	LogConfig logConfig
 )
+
+type logConfig struct {
+	Level      string `json:"level"`
+	Filename   string `json:"filename"`
+	MaxSize    int    `json:"maxsize"`
+	MaxAge     int    `json:"max_age"`
+	MaxBackups int    `json:"max_backups"`
+}
 
 func init() {
 	file, err := ini.Load("config/config.ini")
@@ -27,8 +37,10 @@ func init() {
 	}
 	LoadServer(file)
 	LoadData(file)
+	LoadLog(file)
 }
 
+//加载服务器设置
 func LoadServer(file *ini.File) {
 	AppMode = file.Section("server").Key("AppMode").MustString("debug")
 	HttpPort = file.Section("server").Key("HttpPort").MustString(":3000")
@@ -37,6 +49,7 @@ func LoadServer(file *ini.File) {
 	JwtIssuer = file.Section("server").Key("JwtIssuer").MustString("travelfriend")
 }
 
+//加载数据库配置
 func LoadData(file *ini.File) {
 	Db = file.Section("database").Key("Db").MustString("mysql")
 	DbHost = file.Section("database").Key("DbHost").MustString("localhost")
@@ -44,4 +57,13 @@ func LoadData(file *ini.File) {
 	DbUser = file.Section("database").Key("DbUser").MustString("tfserver")
 	DbPassword = file.Section("database").Key("DbPassword").MustString("tfserver")
 	DbName = file.Section("database").Key("DbName").MustString("tfserver")
+}
+
+//加载日志配置
+func LoadLog(file *ini.File) {
+	LogConfig.Level = file.Section("log").Key("Level").MustString("debug")
+	LogConfig.Filename = file.Section("log").Key("Filename").MustString("tf.log")
+	LogConfig.MaxSize = file.Section("log").Key("MaxSize").MustInt(200)
+	LogConfig.MaxAge = file.Section("log").Key("MaxAge").MustInt(7)
+	LogConfig.MaxBackups = file.Section("log").Key("MaxBackups").MustInt(10)
 }
