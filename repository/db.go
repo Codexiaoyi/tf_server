@@ -44,7 +44,7 @@ func InitDbContext() {
 	}
 
 	// 迁移数据表
-	_ = db.AutoMigrate(&model.User{}, &model.Account{})
+	_ = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.User{}, &model.Account{}, &model.Team{}, &model.Member{})
 
 	sqlDB, _ := db.DB()
 	// SetMaxIdleCons 设置连接池中的最大闲置连接数。

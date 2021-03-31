@@ -1,12 +1,10 @@
 package repository
 
-import "tfserver/model"
+import (
+	"tfserver/model"
 
-//增加新账户
-func AddAccount(account *model.Account) error {
-	err := db.Create(&account).Error
-	return err
-}
+	"gorm.io/gorm"
+)
 
 //查询账户密码
 func QueryAccountByEmail(email string) (model.Account, error) {
@@ -22,11 +20,28 @@ func CheckAccount(email string) bool {
 	return account.ID > 0
 }
 
+//增加新账户
+func AddAccount(account *model.Account) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		var err error
+		err = tx.Create(&account).Error
+		if err != nil {
+			return err
+		}
+		//添加默认账户信息
+		err = tx.Create(&model.User{
+			Email: account.Email,
+		}).Error
+		return err
+	})
+}
+
 //修改账号信息，目前仅改密码
 func UpdateAccount(account *model.Account) error {
-	err = db.Model(&account).Where("ID = ?", account.ID).Updates(map[string]interface{}{
-		"password": account.Password,
-	}).Error
-
-	return err
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		err := db.Model(&account).Where("ID = ?", account.ID).Updates(map[string]interface{}{
+			"password": account.Password,
+		}).Error
+		return err
+	})
 }

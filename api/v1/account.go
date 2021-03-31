@@ -25,12 +25,10 @@ func Register(c *gin.Context) {
 			account.Password = hash
 		}
 		//账号不存在，添加新账号
-		repository.AddAccount(&account)
-		//添加默认账户信息
-		repository.AddUser(&model.User{
-			Email: account.Email,
-		})
-		status = errmsg.SUCCESS
+		repoErr := repository.AddAccount(&account)
+		if repoErr == nil {
+			status = errmsg.SUCCESS
+		}
 	} else {
 		status = errmsg.ERROR_ACCOUNT_EXIST
 	}

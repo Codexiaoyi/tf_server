@@ -22,6 +22,7 @@ require (
 	golang.org/x/net v0.0.0-20210324205630-d1beb07c2056 // indirect
 	golang.org/x/sys v0.0.0-20210326220804-49726bf1d181 // indirect
 	golang.org/x/tools v0.1.0 // indirect
+	google.golang.org/protobuf v1.26.0
 	gopkg.in/hlandau/easymetric.v1 v1.0.0 // indirect
 	gopkg.in/hlandau/measurable.v1 v1.0.1 // indirect
 	gopkg.in/hlandau/passlib.v1 v1.0.11

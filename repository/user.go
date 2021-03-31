@@ -2,13 +2,9 @@ package repository
 
 import (
 	"tfserver/model"
-)
 
-//新增用户
-func AddUser(data *model.User) error {
-	err := db.Create(&data).Error
-	return err
-}
+	"gorm.io/gorm"
+)
 
 //查询用户
 func QueryUserByEmail(email string) (model.User, error) {
@@ -19,18 +15,19 @@ func QueryUserByEmail(email string) (model.User, error) {
 
 //更新用户信息
 func UpdateUser(id int, user *model.User) error {
-	err = db.Model(&user).Where("ID = ?", user.ID).Updates(map[string]interface{}{
-		"user_name": user.UserName,
-		"gender":    user.Gender,
-		"email":     user.Email,
-		"avatar":    user.Avatar,
-		"year":      user.Year,
-		"month":     user.Month,
-		"day":       user.Day,
-		"province":  user.Province,
-		"city":      user.City,
-		"street":    user.Street,
-	}).Error
-
-	return err
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		err := tx.Model(&user).Where("ID = ?", user.ID).Updates(map[string]interface{}{
+			"user_name": user.UserName,
+			"gender":    user.Gender,
+			"email":     user.Email,
+			"avatar":    user.Avatar,
+			"year":      user.Year,
+			"month":     user.Month,
+			"day":       user.Day,
+			"province":  user.Province,
+			"city":      user.City,
+			"street":    user.Street,
+		}).Error
+		return err
+	})
 }
