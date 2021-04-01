@@ -26,6 +26,10 @@ func InitRouter() *gin.Engine {
 		routerV1.POST("team/info/get", middleware.JwtMiddleware(), v1.GetTeamInfo)
 		routerV1.POST("team/members", middleware.JwtMiddleware(), v1.GetTeamMembers)
 		routerV1.POST("team/teams", middleware.JwtMiddleware(), v1.GetUserTeams)
+		routerV1.POST("team/member/add", middleware.JwtMiddleware(), v1.AddMember)
+		routerV1.POST("team/member/leave", middleware.JwtMiddleware(), v1.MemberLeave)
+		routerV1.POST("team/member/remove", middleware.JwtMiddleware(), v1.RemoveMember)
+		routerV1.POST("team/leader/transform", middleware.JwtMiddleware(), v1.TransformLeader)
 	}
 
 	//注册zap日志框架的中间件

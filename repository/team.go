@@ -52,13 +52,6 @@ func CreateNewTeam(team *model.Team) error {
 	})
 }
 
-//添加成员
-func AddMember(member *model.Member) error {
-	return BeginTransaction(db, func(tx *gorm.DB) error {
-		return tx.Create(&member).Error
-	})
-}
-
 //更新团队信息
 func UpdateTeamInfo(team *model.Team) error {
 	return BeginTransaction(db, func(tx *gorm.DB) error {
@@ -67,5 +60,43 @@ func UpdateTeamInfo(team *model.Team) error {
 			"avatar":       team.Avatar,
 			"introduction": team.Introduction,
 		}).Error
+	})
+}
+
+//获取某团队的某成员
+func GetMemberByTeamIdAndEmail(email string, teamId int) (model.Member, error) {
+	var member model.Member
+	err := db.Limit(1).Where("team_id = ? and email = ?", teamId, email).Find(&member).Error
+	return member, err
+}
+
+//添加成员进入团队
+func AddMember(member *model.Member) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		return tx.Create(&member).Error
+	})
+}
+
+//将成员移除团队
+func RemoveMember(member *model.Member) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		return tx.Delete(&member).Error
+	})
+}
+
+//队长转让
+func TransformLeader(oldLeader, newLeader *model.Member) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		var err error
+		err = tx.Model(&oldLeader).Where("ID = ?", oldLeader.ID).Updates(map[string]interface{}{
+			"is_leader": false,
+		}).Error
+		if err != nil {
+			return err
+		}
+		err = tx.Model(&oldLeader).Where("ID = ?", newLeader.ID).Updates(map[string]interface{}{
+			"is_leader": true,
+		}).Error
+		return err
 	})
 }

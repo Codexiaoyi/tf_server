@@ -2,7 +2,6 @@ package v1
 
 import (
 	"tfserver/application/command"
-	"tfserver/application/query"
 	"tfserver/repository"
 	"tfserver/util/errmsg"
 	"tfserver/util/log"
@@ -14,13 +13,12 @@ import (
 
 //获取用户信息
 func GetUserInfo(c *gin.Context) {
-	var query query.GetUserInfo
-	_ = c.ShouldBindJSON(&query)
+	email := c.GetString("email")
 	status := errmsg.ERROR
 
-	user, err := repository.QueryUserByEmail(query.Email)
+	user, err := repository.QueryUserByEmail(email)
 	if err == nil {
-		if user.Email != "" && user.Email == query.Email {
+		if user.Email != "" && user.Email == email {
 			data := make(map[string]interface{})
 			data["user"] = user
 			status = errmsg.SUCCESS
@@ -38,10 +36,11 @@ func GetUserInfo(c *gin.Context) {
 func UpdateUserInfo(c *gin.Context) {
 	var command command.UpdateUserInfo
 	_ = c.ShouldBindJSON(&command)
+	email := c.GetString("email")
 	status := errmsg.ERROR
 
 	//先查询用户是否存在
-	user, err := repository.QueryUserByEmail(command.Email)
+	user, err := repository.QueryUserByEmail(email)
 	if err == nil && user.ID > 0 {
 		//用户存在
 		mapErr := mapper.StructMapByFieldName(&command, &user)
