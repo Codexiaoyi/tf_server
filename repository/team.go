@@ -6,6 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
+//查询团队是否存在
+func CheckTeam(teamId int) bool {
+	var team model.Team
+	db.Select("id").Where("ID = ?", teamId).First(&team)
+	return team.ID > 0
+}
+
 //查询用户拥有的团队
 func QueryTeamsByEmail(email string) ([]model.Member, error) {
 	members := make([]model.Member, 0)

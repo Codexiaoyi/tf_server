@@ -7,6 +7,7 @@ type CreateTeam struct {
 }
 
 type UpdateTeamInfo struct {
+	TeamId       int
 	TeamName     string
 	Introduction string
 }

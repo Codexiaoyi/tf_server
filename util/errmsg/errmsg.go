@@ -15,6 +15,8 @@ const (
 	ERROR_PASSWORD_ERROR    = 1003
 	// code= 2000... 用户模块错误
 	ERROR_USER_NOT_EXIST = 2001
+	// code= 3000 ... 团队模块
+	ERROR_TEAM_NOT_EXIST = 3001
 )
 
 var codeMsg = map[int]string{
@@ -28,6 +30,7 @@ var codeMsg = map[int]string{
 	ERROR_ACCOUNT_NOT_EXIST: "账号不存在",
 	ERROR_PASSWORD_ERROR:    "密码错误",
 	ERROR_USER_NOT_EXIST:    "用户不存在",
+	ERROR_TEAM_NOT_EXIST:    "团队不存在",
 }
 
 //通过错误码获取错误信息
