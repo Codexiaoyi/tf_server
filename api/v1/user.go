@@ -111,3 +111,23 @@ func UploadUserAvatar(c *gin.Context) {
 
 	response.Response(c, errmsg.SUCCESS)
 }
+
+//加载自己头像
+func GetUserAvatar(c *gin.Context) {
+	email := c.GetString("email")
+
+	//查询头像地址
+	user, err := repository.QueryUserByEmail(email)
+	if err != nil || user.ID <= 0 {
+		response.Response(c, errmsg.ERROR_USER_NOT_EXIST)
+		return
+	}
+
+	file, err := oss.Download(user.Avatar)
+	if err != nil {
+		response.Response(c, errmsg.FILE_DOWNLOAD_FAILED)
+		return
+	}
+
+	c.Writer.Write(file)
+}

@@ -10,7 +10,8 @@ const (
 	TOKEN_NOT_VALID    = 603
 
 	//文件上传错误
-	FILE_UPLOAD_FAILED = 801
+	FILE_UPLOAD_FAILED   = 801
+	FILE_DOWNLOAD_FAILED = 802
 
 	// code= 1000... 账号模块的错误
 	ERROR_ACCOUNT_EXIST     = 1001
@@ -35,6 +36,7 @@ var codeMsg = map[int]string{
 	TOKEN_FORMAT_ERROR:           "token格式错误",
 	TOKEN_NOT_VALID:              "token无效或已过期",
 	FILE_UPLOAD_FAILED:           "文件上传失败",
+	FILE_DOWNLOAD_FAILED:         "文件下载失败",
 	ERROR_ACCOUNT_EXIST:          "账号已存在",
 	ERROR_ACCOUNT_NOT_EXIST:      "账号不存在",
 	ERROR_PASSWORD_ERROR:         "密码错误",
