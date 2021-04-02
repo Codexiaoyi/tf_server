@@ -36,7 +36,7 @@ type logConfig struct {
 }
 
 func init() {
-	file, err := ini.Load("config/config.ini")
+	file, err := ini.Load("config/config_debug.ini")
 	if err != nil {
 		fmt.Println("Load config file error!", err)
 	}
