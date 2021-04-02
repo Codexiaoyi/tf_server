@@ -1,11 +1,16 @@
 package v1
 
 import (
+	"io/ioutil"
+	"path"
+	"strconv"
 	"tfserver/application/command"
 	"tfserver/repository"
 	"tfserver/util/errmsg"
 	"tfserver/util/log"
+	"tfserver/util/oss"
 	"tfserver/util/response"
+	"time"
 
 	"github.com/Codexiaoyi/go-mapper"
 	"github.com/gin-gonic/gin"
@@ -59,4 +64,50 @@ func UpdateUserInfo(c *gin.Context) {
 	}
 
 	response.Response(c, status)
+}
+
+//上传用户头像
+func UploadUserAvatar(c *gin.Context) {
+	email := c.GetString("email")
+	file, err := c.FormFile("avatar")
+	if err != nil {
+		response.Response(c, errmsg.FILE_UPLOAD_FAILED)
+		return
+	}
+
+	src, err := file.Open()
+	if err != nil {
+		response.Response(c, errmsg.FILE_UPLOAD_FAILED)
+		return
+	}
+	defer src.Close()
+
+	//获取当前时间戳
+	timeUnix := strconv.FormatInt(time.Now().Unix(), 10)
+	//组成新文件名
+	path := "user/" + email + "/avatar/" + timeUnix + path.Ext(file.Filename)
+
+	//先保存地址到数据库
+	user, err := repository.QueryUserByEmail(email)
+	if err != nil || user.ID <= 0 {
+		response.Response(c, errmsg.ERROR_USER_NOT_EXIST)
+		return
+	}
+	//用户存在
+	user.Avatar = path
+	updateErr := repository.UpdateUser(int(user.ID), &user)
+	if updateErr != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
+	//获取byte数组
+	out, _ := ioutil.ReadAll(src)
+	err = oss.Upload(out, path)
+	if err != nil {
+		response.Response(c, errmsg.FILE_UPLOAD_FAILED)
+		return
+	}
+
+	response.Response(c, errmsg.SUCCESS)
 }

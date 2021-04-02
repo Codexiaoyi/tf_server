@@ -1,9 +1,9 @@
 package main
 
 import (
+	"tfserver/config"
 	"tfserver/repository"
 	"tfserver/route"
-	"tfserver/util"
 	"tfserver/util/log"
 )
 
@@ -15,5 +15,5 @@ func main() {
 	//初始化gin的路由
 	ginRoute := route.InitRouter()
 	//运行
-	ginRoute.Run(util.HttpPort)
+	ginRoute.Run(config.HttpPort)
 }

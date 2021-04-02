@@ -3,8 +3,8 @@ package repository
 import (
 	"fmt"
 	"os"
+	"tfserver/config"
 	"tfserver/model"
-	"tfserver/util"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -19,11 +19,11 @@ var err error
 //初始化数据库上下文
 func InitDbContext() {
 	dns := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		util.DbUser,
-		util.DbPassword,
-		util.DbHost,
-		util.DbPort,
-		util.DbName,
+		config.DbUser,
+		config.DbPassword,
+		config.DbHost,
+		config.DbPort,
+		config.DbName,
 	)
 
 	db, err = gorm.Open(mysql.Open(dns), &gorm.Config{

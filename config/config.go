@@ -1,4 +1,4 @@
-package util
+package config
 
 import (
 	"fmt"
@@ -20,6 +20,11 @@ var (
 	DbName     string
 
 	LogConfig logConfig
+
+	OssEndpoint        string
+	OssAccessKeyId     string
+	OssAccessKeySecret string
+	OssBucketName      string
 )
 
 type logConfig struct {
@@ -38,6 +43,7 @@ func init() {
 	LoadServer(file)
 	LoadData(file)
 	LoadLog(file)
+	LoadOSS(file)
 }
 
 //加载服务器设置
@@ -66,4 +72,12 @@ func LoadLog(file *ini.File) {
 	LogConfig.MaxSize = file.Section("log").Key("MaxSize").MustInt(200)
 	LogConfig.MaxAge = file.Section("log").Key("MaxAge").MustInt(7)
 	LogConfig.MaxBackups = file.Section("log").Key("MaxBackups").MustInt(10)
+}
+
+//加载oss相关配置
+func LoadOSS(file *ini.File) {
+	OssEndpoint = file.Section("aliOss").Key("Endpoint").MustString("<yourEndpoint>")
+	OssAccessKeyId = file.Section("aliOss").Key("AccessKeyId").MustString("<yourAccessKeyId>")
+	OssAccessKeySecret = file.Section("aliOss").Key("AccessKeySecret").MustString("<yourAccessKeySecret>")
+	OssBucketName = file.Section("aliOss").Key("BucketName").MustString("<yourBucketName>")
 }

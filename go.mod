@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/Codexiaoyi/go-mapper v1.0.0
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/aliyun/aliyun-oss-go-sdk v2.1.7+incompatible
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gin-gonic/gin v1.6.3
@@ -24,6 +25,7 @@ require (
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2 // indirect
 	golang.org/x/net v0.0.0-20210324205630-d1beb07c2056 // indirect
 	golang.org/x/sys v0.0.0-20210326220804-49726bf1d181 // indirect
+	golang.org/x/time v0.0.0-20210220033141-f8bda1e9f3ba // indirect
 	golang.org/x/tools v0.1.0 // indirect
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/hlandau/easymetric.v1 v1.0.0 // indirect

@@ -8,7 +8,7 @@ import (
 	"os"
 	"runtime/debug"
 	"strings"
-	"tfserver/util"
+	"tfserver/config"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +21,7 @@ var lg *zap.Logger
 
 // InitLogger 初始化Logger
 func InitLogger() {
-	cfg := &util.LogConfig
+	cfg := &config.LogConfig
 	writeSyncer := getLogWriter(cfg.Filename, cfg.MaxSize, cfg.MaxBackups, cfg.MaxAge)
 	encoder := getEncoder()
 	var l = new(zapcore.Level)

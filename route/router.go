@@ -2,15 +2,15 @@ package route
 
 import (
 	v1 "tfserver/api/v1"
+	"tfserver/config"
 	"tfserver/middleware"
-	"tfserver/util"
 	"tfserver/util/log"
 
 	"github.com/gin-gonic/gin"
 )
 
 func InitRouter() *gin.Engine {
-	gin.SetMode(util.AppMode)
+	gin.SetMode(config.AppMode)
 	r := gin.Default()
 	routerV1 := r.Group("api/v1")
 	{
@@ -20,6 +20,7 @@ func InitRouter() *gin.Engine {
 		//用户模块接口
 		routerV1.POST("user/info/get", middleware.JwtMiddleware(), v1.GetUserInfo)
 		routerV1.POST("user/info/update", middleware.JwtMiddleware(), v1.UpdateUserInfo)
+		routerV1.POST("user/avatar/upload", middleware.JwtMiddleware(), v1.UploadUserAvatar)
 		//团队模块接口
 		routerV1.POST("team/create", middleware.JwtMiddleware(), v1.CreateNewTeam)
 		routerV1.POST("team/info/update", middleware.JwtMiddleware(), v1.UpdateTeamInfo)
