@@ -12,6 +12,10 @@ var (
 	JwtKey    []byte
 	JwtIssuer string
 
+	CHost     string
+	CPort     string
+	CPassword string
+
 	Db         string
 	DbHost     string
 	DbPort     string
@@ -41,6 +45,7 @@ func init() {
 		fmt.Println("Load config file error!", err)
 	}
 	LoadServer(file)
+	LoadCache(file)
 	LoadData(file)
 	LoadLog(file)
 	LoadOSS(file)
@@ -53,6 +58,13 @@ func LoadServer(file *ini.File) {
 	jwtKeyStr := file.Section("server").Key("JwtKey").MustString("asdasccuiwej8498as5123xzc")
 	JwtKey = []byte(jwtKeyStr)
 	JwtIssuer = file.Section("server").Key("JwtIssuer").MustString("travelfriend")
+}
+
+//加载缓存数据库
+func LoadCache(file *ini.File) {
+	CHost = file.Section("cache").Key("CHost").MustString("localhost")
+	CPort = file.Section("cache").Key("CPort").MustString(":6379")
+	CPassword = file.Section("cache").Key("CPassword").MustString("")
 }
 
 //加载数据库配置
