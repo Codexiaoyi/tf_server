@@ -2,9 +2,12 @@ package cache
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"tfserver/config"
+	"tfserver/util/log"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -28,7 +31,25 @@ func InitCache() {
 
 	_, err := CDb.Client.Ping(CDb.Context).Result()
 	if err != nil {
-		fmt.Printf("连接redis出错，错误信息：%v", err)
+		log.ErrorLog("连接redis出错..", err.Error())
 		os.Exit(1)
+	}
+}
+
+//set对象
+func (c *Cache) SetObject(key string, object interface{}, expiration time.Duration) {
+	data, _ := json.Marshal(object)
+	err := c.Client.Set(c.Context, key, string(data), expiration).Err()
+	if err != nil {
+		log.DebugLog("redis错误", err.Error())
+	}
+}
+
+//get对象
+func (c *Cache) GetObject(key string, object interface{}) {
+	result, _ := c.Client.Get(c.Context, key).Result()
+	err := json.Unmarshal([]byte(result), object)
+	if err != nil {
+		log.DebugLog("redis错误", err.Error())
 	}
 }
