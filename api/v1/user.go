@@ -1,13 +1,14 @@
 package v1
 
 import (
+	"fmt"
 	"io/ioutil"
 	"path"
 	"strconv"
 	"tfserver/application/command"
 	"tfserver/repository"
+	"tfserver/repository/cache"
 	"tfserver/util/errmsg"
-	"tfserver/util/log"
 	"tfserver/util/oss"
 	"tfserver/util/response"
 	"time"
@@ -19,22 +20,21 @@ import (
 //获取用户信息
 func GetUserInfo(c *gin.Context) {
 	email := c.GetString("email")
-	status := errmsg.ERROR
 
 	user, err := repository.QueryUserByEmail(email)
-	if err == nil {
-		if user.Email != "" && user.Email == email {
-			data := make(map[string]interface{})
-			data["user"] = user
-			status = errmsg.SUCCESS
-			response.ResponseWithData(c, status, data)
-			return
-		} else {
-			status = errmsg.ERROR_USER_NOT_EXIST
-		}
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
 	}
 
-	response.Response(c, status)
+	if user.Email != "" && user.Email == email {
+		data := make(map[string]interface{})
+		data["user"] = user
+		response.ResponseWithData(c, errmsg.SUCCESS, data)
+	} else {
+		response.Response(c, errmsg.ERROR_USER_NOT_EXIST)
+	}
+
 }
 
 //更新用户信息
@@ -42,33 +42,46 @@ func UpdateUserInfo(c *gin.Context) {
 	var command command.UpdateUserInfo
 	_ = c.ShouldBindJSON(&command)
 	email := c.GetString("email")
-	status := errmsg.ERROR
 
 	//先查询用户是否存在
 	user, err := repository.QueryUserByEmail(email)
-	if err == nil && user.ID > 0 {
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+	if user.ID > 0 {
 		//用户存在
 		mapErr := mapper.StructMapByFieldName(&command, &user)
-		if mapErr == nil {
-			updateErr := repository.UpdateUser(int(user.ID), &user)
-			if updateErr == nil {
-				//更新成功
-				status = errmsg.SUCCESS
-			}
-		} else {
-			log.ErrorLog("Dto map failed!", mapErr.Error())
+		if mapErr != nil {
+			response.Response(c, errmsg.ERROR)
+			return
 		}
+		updateErr := repository.UpdateUser(int(user.ID), &user)
+		if updateErr != nil {
+			response.Response(c, errmsg.ERROR)
+			return
+		}
+		response.Response(c, errmsg.SUCCESS)
 	} else {
 		//用户不存在，不更新
-		status = errmsg.ERROR_USER_NOT_EXIST
+		response.Response(c, errmsg.ERROR_USER_NOT_EXIST)
 	}
-
-	response.Response(c, status)
 }
 
 //上传用户头像
 func UploadUserAvatar(c *gin.Context) {
 	email := c.GetString("email")
+	field := fmt.Sprintf("avatar_%s", email)
+
+	exist := cache.CDb.IsExist("user", field)
+	if exist {
+		//缓存失效
+		if !cache.CDb.Delete("user", field) {
+			response.Response(c, errmsg.FILE_UPLOAD_FAILED)
+			return
+		}
+	}
+
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		response.Response(c, errmsg.FILE_UPLOAD_FAILED)
@@ -115,6 +128,17 @@ func UploadUserAvatar(c *gin.Context) {
 //加载自己头像
 func GetUserAvatar(c *gin.Context) {
 	email := c.GetString("email")
+	field := fmt.Sprintf("avatar_%s", email)
+
+	exist := cache.CDb.IsExist("user", field)
+	if exist {
+		//缓存有
+		file, err := cache.CDb.Get("user", field)
+		if err == nil {
+			c.Writer.Write(file)
+			return
+		}
+	}
 
 	//查询头像地址
 	user, err := repository.QueryUserByEmail(email)
@@ -128,6 +152,8 @@ func GetUserAvatar(c *gin.Context) {
 		response.Response(c, errmsg.FILE_DOWNLOAD_FAILED)
 		return
 	}
+
+	cache.CDb.Set("user", field, file)
 
 	c.Writer.Write(file)
 }
