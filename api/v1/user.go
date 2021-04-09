@@ -73,15 +73,6 @@ func UploadUserAvatar(c *gin.Context) {
 	email := c.GetString("email")
 	field := fmt.Sprintf("avatar_%s", email)
 
-	exist := cache.CDb.IsExist("user", field)
-	if exist {
-		//缓存失效
-		if !cache.CDb.Delete("user", field) {
-			response.Response(c, errmsg.FILE_UPLOAD_FAILED)
-			return
-		}
-	}
-
 	file, err := c.FormFile("avatar")
 	if err != nil {
 		response.Response(c, errmsg.FILE_UPLOAD_FAILED)
@@ -120,6 +111,12 @@ func UploadUserAvatar(c *gin.Context) {
 	if err != nil {
 		response.Response(c, errmsg.FILE_UPLOAD_FAILED)
 		return
+	}
+
+	exist := cache.CDb.IsExist("user", field)
+	if exist {
+		//缓存失效
+		cache.CDb.Delete("user", field)
 	}
 
 	response.Response(c, errmsg.SUCCESS)
