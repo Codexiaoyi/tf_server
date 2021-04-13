@@ -5,6 +5,7 @@ import (
 	"os"
 	"tfserver/config"
 	"tfserver/model"
+	"tfserver/util/log"
 	"time"
 
 	"gorm.io/driver/mysql"
@@ -44,7 +45,7 @@ func InitDbContext() {
 	}
 
 	// 迁移数据表
-	_ = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.User{}, &model.Account{}, &model.Team{}, &model.Member{}, &model.UserAlbum{}, &model.TeamAlbum{})
+	_ = db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&model.User{}, &model.Account{}, &model.Team{}, &model.Member{}, &model.UserAlbum{})
 
 	sqlDB, _ := db.DB()
 	// SetMaxIdleCons 设置连接池中的最大闲置连接数。
@@ -55,4 +56,29 @@ func InitDbContext() {
 
 	// SetConnMaxLifetiment 设置连接的最大可复用时间。
 	sqlDB.SetConnMaxLifetime(10 * time.Second)
+}
+
+//开启事务
+func BeginTransaction(db *gorm.DB, process func(tx *gorm.DB) error) error {
+	tx := db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	if err := tx.Error; err != nil {
+		return err
+	}
+
+	err := process(tx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	err = tx.Commit().Error
+
+	log.ErrorLog("Transaction error:", err.Error())
+	return err
 }
