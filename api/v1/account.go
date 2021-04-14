@@ -16,24 +16,36 @@ func Register(c *gin.Context) {
 	var account model.Account
 	_ = c.ShouldBindJSON(&account)
 
-	status := errmsg.ERROR
 	isExist := repository.CheckAccount(account.Email)
-	if !isExist {
-		hash, err := passlib.Hash(account.Password)
-		if err == nil {
-			//hash成功
-			account.Password = hash
-		}
-		//账号不存在，添加新账号
-		repoErr := repository.AddAccount(&account)
-		if repoErr == nil {
-			status = errmsg.SUCCESS
-		}
-	} else {
-		status = errmsg.ERROR_ACCOUNT_EXIST
+	if isExist {
+		response.Response(c, errmsg.ERROR_ACCOUNT_EXIST)
+		return
 	}
 
-	response.Response(c, status)
+	hash, err := passlib.Hash(account.Password)
+	if err != nil || hash == "" {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
+	//hash成功
+	account.Password = hash
+	//添加新账号
+	repoErr := repository.AddAccount(&account)
+	if repoErr != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
+	//成功注册颁发token
+	data := make(map[string]interface{})
+	token, err := jwt.GetToken(account.Email)
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+	data["token"] = token
+	response.ResponseWithData(c, errmsg.SUCCESS, data)
 }
 
 //登录接口
