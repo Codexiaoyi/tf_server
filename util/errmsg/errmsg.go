@@ -26,6 +26,8 @@ const (
 	ERROR_MEMBER_IS_LEADER       = 3004
 	ERROR_MEMBER_IS_NOT_LEADER   = 3005
 	ERROR_MEMBER_IS_ME           = 3006
+	// code= 4000 ...相册模块
+	ERROR_ALBUM_NOT_EXIST = 4001
 )
 
 var codeMsg = map[int]string{
@@ -47,6 +49,7 @@ var codeMsg = map[int]string{
 	ERROR_MEMBER_IS_LEADER:       "队长需先转让或解散团队",
 	ERROR_MEMBER_IS_NOT_LEADER:   "不是队长，无权限操作",
 	ERROR_MEMBER_IS_ME:           "不能对自己操作",
+	ERROR_ALBUM_NOT_EXIST:        "相册不存在",
 }
 
 //通过错误码获取错误信息

@@ -25,8 +25,8 @@ func InitRouter() *gin.Engine {
 		//用户相册模块接口
 		routerV1.POST("user/album/create", middleware.JwtMiddleware(), v1.CreateNewUserAlbum)
 		routerV1.POST("user/album/albums", middleware.JwtMiddleware(), v1.GetUserAlbums)
+		routerV1.POST("user/album/info/get", middleware.JwtMiddleware(), v1.GetUserAlbumInfo)
 		routerV1.POST("user/album/info/update", middleware.JwtMiddleware(), v1.UpdateUserAlbumInfo)
-		routerV1.POST("user/album/delete", middleware.JwtMiddleware(), v1.DeleteUserAlbum)
 		//团队模块接口
 		routerV1.POST("team/create", middleware.JwtMiddleware(), v1.CreateNewTeam)
 		routerV1.POST("team/info/update", middleware.JwtMiddleware(), v1.UpdateTeamInfo)
