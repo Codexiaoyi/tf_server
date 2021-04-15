@@ -31,6 +31,7 @@ func InitRouter() *gin.Engine {
 		routerV1.POST("user/album/thumbnail/thumbnails", middleware.JwtMiddleware(), v1.GetUserAlbumThumbnails)
 		routerV1.POST("user/album/thumbnail/get", middleware.JwtMiddleware(), v1.GetUserAlbumThumbnail)
 		routerV1.POST("user/album/upload/key/get", middleware.JwtMiddleware(), v1.GetUploadKey)
+		routerV1.POST("user/album/upload/media/success", middleware.JwtMiddleware(), v1.UploadMedia)
 		//团队模块接口
 		routerV1.POST("team/create", middleware.JwtMiddleware(), v1.CreateNewTeam)
 		routerV1.POST("team/info/update", middleware.JwtMiddleware(), v1.UpdateTeamInfo)

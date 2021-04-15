@@ -13,7 +13,12 @@ type UpdateAlbumInfo struct {
 	Introduction string
 }
 
-type UploadImages struct {
-	AlbumId    int
-	ImageNames []string
+type GetKeyAndUrl struct {
+	Names []string
+}
+
+type UploadSuccess struct {
+	AlbumId int
+	IsVideo bool
+	Url     string
 }

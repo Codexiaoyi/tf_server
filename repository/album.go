@@ -40,3 +40,10 @@ func UpdateUserAlbumInfo(albumId int, album *model.UserAlbum) error {
 		}).Error
 	})
 }
+
+//新建图片文件到相册
+func AddImage(medias *model.UserAlbumMedia) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		return tx.Create(&medias).Error
+	})
+}

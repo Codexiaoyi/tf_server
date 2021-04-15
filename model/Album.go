@@ -17,3 +17,10 @@ type UserAlbum struct {
 }
 
 //用户相册图片和视频
+type UserAlbumMedia struct {
+	gorm.Model
+	AlbumId      int    `gorm:"type:int;not null;index" json:"teamid"`
+	IsVideo      bool   `gorm:"type:int;not null" json:"isVideo"`                          //是否是视频
+	Url          string `gorm:"type:varchar(100);not null;default:''" json:"url"`          //地址
+	ThumbnailUrl string `gorm:"type:varchar(100);not null;default:''" json:"thumbnailUrl"` //缩略图地址
+}

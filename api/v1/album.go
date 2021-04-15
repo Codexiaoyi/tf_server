@@ -125,24 +125,49 @@ func GetUserAlbumThumbnail(c *gin.Context) {
 
 //获取文件上传凭证及路径，用于前端直接上传到oss
 func GetUploadKey(c *gin.Context) {
-	var command command.UploadImages
+	email := c.GetString("email")
+	var command command.GetKeyAndUrl
 	c.ShouldBindJSON(&command)
 
-	var result []string
-	for _, name := range command.ImageNames {
+	var urls []string
+	for _, name := range command.Names {
 		split := strings.Split(name, ".")
 		ext := split[len(split)-1] //获取扩展名
 		//获取当前时间戳
 		timeUnix := strconv.FormatInt(time.Now().Unix(), 10)
-		result = append(result, fmt.Sprintf("%s.%s", timeUnix, ext))
+		urls = append(urls, fmt.Sprintf("user/%s/album/media/%s.%s", email, timeUnix, ext))
 	}
-
-	//写入数据库
-
 	data := make(map[string]interface{})
 	data["region"] = config.OssEndpointToWeb
 	data["accessKeyId"] = config.OssAccessKeyIdToWeb
 	data["accessKeySecret"] = config.OssAccessKeySecretToWeb
-	data["imageNames"] = result
+	data["urls"] = urls //所有的url
 	response.ResponseWithData(c, errmsg.SUCCESS, data)
+}
+
+//文件上传成功后回调
+func UploadMedia(c *gin.Context) {
+	email := c.GetString("email")
+	var command command.UploadSuccess
+	c.ShouldBindJSON(&command)
+
+	split := strings.Split(command.Url, "/")
+	name := split[len(split)-1]
+	thumbnailUrl := fmt.Sprintf("user/%s/album/media/thumbnail/%s", email, name)
+
+	media := model.UserAlbumMedia{
+		AlbumId:      command.AlbumId,
+		IsVideo:      false,
+		Url:          command.Url,
+		ThumbnailUrl: thumbnailUrl,
+	}
+
+	//写入数据库
+	err := repository.AddImage(&media)
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
+	response.Response(c, errmsg.SUCCESS)
 }
