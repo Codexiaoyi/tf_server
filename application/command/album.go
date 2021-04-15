@@ -12,3 +12,8 @@ type UpdateAlbumInfo struct {
 	Name         string
 	Introduction string
 }
+
+type UploadImages struct {
+	AlbumId    int
+	ImageNames []string
+}

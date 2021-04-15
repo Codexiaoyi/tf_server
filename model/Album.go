@@ -15,3 +15,5 @@ type UserAlbum struct {
 	Like         int    `gorm:"type:int;not null" json:"like"`                      //点赞数量
 	Collect      int    `gorm:"type:int;not null" json:"collect"`                   //收藏数量
 }
+
+//用户相册图片和视频

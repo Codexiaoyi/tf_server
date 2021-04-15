@@ -1,12 +1,17 @@
 package v1
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"tfserver/application/command"
 	"tfserver/application/query"
+	"tfserver/config"
 	"tfserver/model"
 	"tfserver/repository"
 	"tfserver/util/errmsg"
 	"tfserver/util/response"
+	"time"
 
 	"github.com/Codexiaoyi/go-mapper"
 	"github.com/gin-gonic/gin"
@@ -101,4 +106,43 @@ func UpdateUserAlbumInfo(c *gin.Context) {
 	}
 
 	response.Response(c, errmsg.SUCCESS)
+}
+
+//获取用户相册封面
+func GetUserAlbumCover(c *gin.Context) {
+
+}
+
+//获取用户相册内的所有缩略图列表
+func GetUserAlbumThumbnails(c *gin.Context) {
+
+}
+
+//获取缩略图
+func GetUserAlbumThumbnail(c *gin.Context) {
+
+}
+
+//获取文件上传凭证及路径，用于前端直接上传到oss
+func GetUploadKey(c *gin.Context) {
+	var command command.UploadImages
+	c.ShouldBindJSON(&command)
+
+	var result []string
+	for _, name := range command.ImageNames {
+		split := strings.Split(name, ".")
+		ext := split[len(split)-1] //获取扩展名
+		//获取当前时间戳
+		timeUnix := strconv.FormatInt(time.Now().Unix(), 10)
+		result = append(result, fmt.Sprintf("%s.%s", timeUnix, ext))
+	}
+
+	//写入数据库
+
+	data := make(map[string]interface{})
+	data["region"] = config.OssEndpointToWeb
+	data["accessKeyId"] = config.OssAccessKeyIdToWeb
+	data["accessKeySecret"] = config.OssAccessKeySecretToWeb
+	data["imageNames"] = result
+	response.ResponseWithData(c, errmsg.SUCCESS, data)
 }

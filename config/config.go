@@ -29,6 +29,11 @@ var (
 	OssAccessKeyId     string
 	OssAccessKeySecret string
 	OssBucketName      string
+
+	OssEndpointToWeb        string
+	OssAccessKeyIdToWeb     string
+	OssAccessKeySecretToWeb string
+	OssBucketNameToWeb      string
 )
 
 type logConfig struct {
@@ -92,4 +97,8 @@ func LoadOSS(file *ini.File) {
 	OssAccessKeyId = file.Section("aliOss").Key("AccessKeyId").MustString("<yourAccessKeyId>")
 	OssAccessKeySecret = file.Section("aliOss").Key("AccessKeySecret").MustString("<yourAccessKeySecret>")
 	OssBucketName = file.Section("aliOss").Key("BucketName").MustString("<yourBucketName>")
+	OssEndpointToWeb = file.Section("aliOss-web").Key("Endpoint").MustString("<yourEndpoint>")
+	OssAccessKeyIdToWeb = file.Section("aliOss-web").Key("AccessKeyId").MustString("<yourAccessKeyId>")
+	OssAccessKeySecretToWeb = file.Section("aliOss-web").Key("AccessKeySecret").MustString("<yourAccessKeySecret>")
+	OssBucketNameToWeb = file.Section("aliOss-web").Key("BucketName").MustString("<yourBucketName>")
 }

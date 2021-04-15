@@ -6,13 +6,6 @@ import (
 	"gorm.io/gorm"
 )
 
-//查询用户相册是否存在
-func CheckAlbum(albumId int) bool {
-	var album model.UserAlbum
-	db.Select("id").Where("ID = ?", albumId).First(&album)
-	return album.ID > 0
-}
-
 //获取用户相册信息
 func QueryUserAlbumByAlbumId(albumId int) (model.UserAlbum, error) {
 	var album model.UserAlbum
