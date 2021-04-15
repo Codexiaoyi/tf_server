@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"path"
 	"strconv"
 	"tfserver/application/command"
@@ -139,14 +140,14 @@ func GetUserAvatar(c *gin.Context) {
 
 	//查询头像地址
 	user, err := repository.QueryUserByEmail(email)
-	if err != nil || user.ID <= 0 {
-		response.Response(c, errmsg.ERROR_USER_NOT_EXIST)
+	if err != nil || user.ID <= 0 || user.Avatar == "" {
+		c.Status(http.StatusNoContent)
 		return
 	}
 
 	file, err := oss.Download(user.Avatar)
 	if err != nil {
-		response.Response(c, errmsg.FILE_DOWNLOAD_FAILED)
+		c.Status(http.StatusNoContent)
 		return
 	}
 
