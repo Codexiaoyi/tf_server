@@ -4,7 +4,6 @@ type CreateAlbum struct {
 	Public       bool
 	Name         string
 	Introduction string
-	Cover        string
 }
 
 type UpdateAlbumInfo struct {
@@ -12,5 +11,4 @@ type UpdateAlbumInfo struct {
 	Public       bool
 	Name         string
 	Introduction string
-	Cover        string
 }
