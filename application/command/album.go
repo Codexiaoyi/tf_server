@@ -22,3 +22,8 @@ type UploadSuccess struct {
 	IsVideo bool
 	Url     string
 }
+
+type SetUserAlbumCover struct {
+	AlbumId int
+	MediaId int
+}

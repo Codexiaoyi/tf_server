@@ -2,6 +2,7 @@ package v1
 
 import (
 	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 	"tfserver/application/command"
@@ -9,7 +10,9 @@ import (
 	"tfserver/config"
 	"tfserver/model"
 	"tfserver/repository"
+	"tfserver/repository/cache"
 	"tfserver/util/errmsg"
+	"tfserver/util/oss"
 	"tfserver/util/response"
 	"time"
 
@@ -108,19 +111,77 @@ func UpdateUserAlbumInfo(c *gin.Context) {
 	response.Response(c, errmsg.SUCCESS)
 }
 
-//获取用户相册封面
-func GetUserAlbumCover(c *gin.Context) {
+//获取自己用户相册内的所有缩略图列表
+func GetUserAlbumMedias(c *gin.Context) {
+	var query query.GetUserAlbumMedias
+	c.ShouldBindJSON(&query)
 
-}
+	//先查询相册是否存在
+	album, err := repository.QueryUserAlbumByAlbumId(query.AlbumId)
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
 
-//获取用户相册内的所有缩略图列表
-func GetUserAlbumThumbnails(c *gin.Context) {
+	if album.ID <= 0 {
+		response.Response(c, errmsg.ERROR_ALBUM_NOT_EXIST)
+		return
+	}
 
+	medias, err := repository.QueryUserAlbumMedias(query.AlbumId)
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["medias"] = medias
+	response.ResponseWithData(c, errmsg.SUCCESS, data)
 }
 
 //获取缩略图
-func GetUserAlbumThumbnail(c *gin.Context) {
+func GetThumbnail(c *gin.Context) {
+	var query query.GetThumbnail
+	c.ShouldBindJSON(&query)
 
+	exist := cache.CDb.IsExist("album_thumbnail", query.Url)
+	if exist {
+		//缓存有
+		file, err := cache.CDb.Get("album_thumbnail", query.Url)
+		if err == nil {
+			c.Writer.Write(file)
+			return
+		}
+	}
+
+	if query.Url == "" {
+		c.Status(http.StatusNoContent)
+		return
+	}
+
+	file, err := oss.Download(query.Url)
+	if err != nil {
+		c.Status(http.StatusNoContent)
+		return
+	}
+
+	cache.CDb.Set("album_thumbnail", query.Url, file)
+
+	c.Writer.Write(file)
+}
+
+//指定用户相册封面
+func SetUserAlbumCover(c *gin.Context) {
+	var command command.SetUserAlbumCover
+	c.ShouldBindJSON(&command)
+
+	err := repository.SetUserAlbumCover(command.AlbumId, command.MediaId)
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
+	response.Response(c, errmsg.SUCCESS)
 }
 
 //获取文件上传凭证及路径，用于前端直接上传到oss
@@ -157,7 +218,7 @@ func UploadMedia(c *gin.Context) {
 
 	media := model.UserAlbumMedia{
 		AlbumId:      command.AlbumId,
-		IsVideo:      false,
+		IsVideo:      command.IsVideo,
 		Url:          command.Url,
 		ThumbnailUrl: thumbnailUrl,
 	}

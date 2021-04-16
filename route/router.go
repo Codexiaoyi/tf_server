@@ -27,9 +27,9 @@ func InitRouter() *gin.Engine {
 		routerV1.POST("user/album/albums", middleware.JwtMiddleware(), v1.GetUserAlbums)
 		routerV1.POST("user/album/info/get", middleware.JwtMiddleware(), v1.GetUserAlbumInfo)
 		routerV1.POST("user/album/info/update", middleware.JwtMiddleware(), v1.UpdateUserAlbumInfo)
-		routerV1.POST("user/album/cover/get", middleware.JwtMiddleware(), v1.GetUserAlbumCover)
-		routerV1.POST("user/album/thumbnail/thumbnails", middleware.JwtMiddleware(), v1.GetUserAlbumThumbnails)
-		routerV1.POST("user/album/thumbnail/get", middleware.JwtMiddleware(), v1.GetUserAlbumThumbnail)
+		routerV1.POST("user/album/media/medias", middleware.JwtMiddleware(), v1.GetUserAlbumMedias)
+		routerV1.POST("user/album/thumbnail/get", middleware.JwtMiddleware(), v1.GetThumbnail)
+		routerV1.POST("user/album/cover/set", middleware.JwtMiddleware(), v1.SetUserAlbumCover)
 		routerV1.POST("user/album/upload/key/get", middleware.JwtMiddleware(), v1.GetUploadKey)
 		routerV1.POST("user/album/upload/media/success", middleware.JwtMiddleware(), v1.UploadMedia)
 		//团队模块接口

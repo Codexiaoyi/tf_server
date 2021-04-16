@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"errors"
 	"tfserver/model"
 
 	"gorm.io/gorm"
@@ -18,6 +19,13 @@ func QueryUserAlbumsByEmail(email string) ([]model.UserAlbum, error) {
 	albums := make([]model.UserAlbum, 0)
 	err := db.Where("email = ?", email).Find(&albums).Error
 	return albums, err
+}
+
+//查询用户相册内媒体数组
+func QueryUserAlbumMedias(albumId int) ([]model.UserAlbumMedia, error) {
+	medias := make([]model.UserAlbumMedia, 0)
+	err := db.Where("album_id = ?", albumId).Find(&medias).Error
+	return medias, err
 }
 
 //新建相册
@@ -38,6 +46,19 @@ func UpdateUserAlbumInfo(albumId int, album *model.UserAlbum) error {
 			"like":         album.Like,
 			"collect":      album.Collect,
 		}).Error
+	})
+}
+
+//指定相册封面（将已有的文件）
+func SetUserAlbumCover(albumId, mediaId int) error {
+	return BeginTransaction(db, func(tx *gorm.DB) error {
+		var media model.UserAlbumMedia
+		err := tx.Limit(1).Select("album_id", "thumbnail_url").Where("ID = ?", mediaId).Find(&media).Error
+		if err != nil || media.AlbumId != albumId {
+			return errors.New("not exist")
+		}
+
+		return tx.Model(&model.UserAlbum{}).Where("ID = ?", albumId).Update("cover", media.ThumbnailUrl).Error
 	})
 }
 
