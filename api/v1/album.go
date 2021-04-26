@@ -190,19 +190,17 @@ func GetUploadKey(c *gin.Context) {
 	var command command.GetKeyAndUrl
 	c.ShouldBindJSON(&command)
 
-	var urls []string
-	for _, name := range command.Names {
-		split := strings.Split(name, ".")
-		ext := split[len(split)-1] //获取扩展名
-		//获取当前时间戳
-		timeUnix := strconv.FormatInt(time.Now().Unix(), 10)
-		urls = append(urls, fmt.Sprintf("user/%s/album/media/%s.%s", email, timeUnix, ext))
-	}
+	split := strings.Split(command.Name, ".")
+	ext := split[len(split)-1] //获取扩展名
+	//获取当前时间戳
+	timeUnix := strconv.FormatInt(time.Now().Unix(), 10)
+	url := fmt.Sprintf("user/%s/album/media/%s.%s", email, timeUnix, ext)
 	data := make(map[string]interface{})
 	data["region"] = config.OssEndpointToWeb
 	data["accessKeyId"] = config.OssAccessKeyIdToWeb
 	data["accessKeySecret"] = config.OssAccessKeySecretToWeb
-	data["urls"] = urls //所有的url
+	data["bucket"] = config.OssBucketNameToWeb
+	data["url"] = url //所有的url
 	response.ResponseWithData(c, errmsg.SUCCESS, data)
 }
 

@@ -14,7 +14,7 @@ type UpdateAlbumInfo struct {
 }
 
 type GetKeyAndUrl struct {
-	Names []string
+	Name string
 }
 
 type UploadSuccess struct {
