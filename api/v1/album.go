@@ -228,5 +228,12 @@ func UploadMedia(c *gin.Context) {
 		return
 	}
 
+	//生成缩略图
+	err = oss.GenerateThumbnail(command.Url, thumbnailUrl)
+	if err != nil {
+		response.Response(c, errmsg.ERROR)
+		return
+	}
+
 	response.Response(c, errmsg.SUCCESS)
 }
