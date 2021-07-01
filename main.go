@@ -2,10 +2,10 @@ package main
 
 import (
 	"tfserver/config"
-	"tfserver/repository"
-	"tfserver/repository/cache"
-	"tfserver/route"
-	"tfserver/util/log"
+	"tfserver/internal/repository"
+	"tfserver/internal/repository/cache"
+	"tfserver/internal/route"
+	"tfserver/pkg/log"
 )
 
 func main() {

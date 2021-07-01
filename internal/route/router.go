@@ -3,8 +3,8 @@ package route
 import (
 	v1 "tfserver/api/v1"
 	"tfserver/config"
-	"tfserver/middleware"
-	"tfserver/util/log"
+	"tfserver/internal/middleware"
+	"tfserver/pkg/log"
 
 	"github.com/gin-gonic/gin"
 )

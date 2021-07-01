@@ -2,7 +2,7 @@ package response
 
 import (
 	"net/http"
-	"tfserver/util/errmsg"
+	"tfserver/internal/errmsg"
 
 	"github.com/gin-gonic/gin"
 )

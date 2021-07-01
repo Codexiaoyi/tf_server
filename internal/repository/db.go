@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 	"tfserver/config"
-	"tfserver/model"
-	"tfserver/util/log"
+	"tfserver/internal/model"
+	"tfserver/pkg/log"
 	"time"
 
 	"gorm.io/driver/mysql"

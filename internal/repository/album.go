@@ -2,7 +2,7 @@ package repository
 
 import (
 	"errors"
-	"tfserver/model"
+	"tfserver/internal/model"
 
 	"gorm.io/gorm"
 )

@@ -1,12 +1,12 @@
 package v1
 
 import (
-	"tfserver/application/command"
-	"tfserver/application/query"
-	"tfserver/model"
-	"tfserver/repository"
-	"tfserver/util/errmsg"
-	"tfserver/util/response"
+	"tfserver/internal/application/command"
+	"tfserver/internal/application/query"
+	"tfserver/internal/errmsg"
+	"tfserver/internal/model"
+	"tfserver/internal/repository"
+	"tfserver/internal/response"
 
 	"github.com/Codexiaoyi/go-mapper"
 	"github.com/gin-gonic/gin"

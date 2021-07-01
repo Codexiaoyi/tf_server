@@ -1,6 +1,6 @@
 package command
 
-import "tfserver/model"
+import "tfserver/internal/model"
 
 type UpdateUserInfo struct {
 	UserName string

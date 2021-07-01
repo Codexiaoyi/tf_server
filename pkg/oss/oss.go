@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"tfserver/config"
-	"tfserver/util/log"
+	"tfserver/pkg/log"
 
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 )

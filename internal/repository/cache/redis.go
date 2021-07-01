@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 	"tfserver/config"
-	"tfserver/util/log"
+	"tfserver/pkg/log"
 
 	"github.com/go-redis/redis/v8"
 )

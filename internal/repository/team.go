@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"tfserver/model"
+	"tfserver/internal/model"
 
 	"gorm.io/gorm"
 )

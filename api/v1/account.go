@@ -1,11 +1,11 @@
 package v1
 
 import (
-	"tfserver/model"
-	"tfserver/repository"
-	"tfserver/util/errmsg"
-	"tfserver/util/jwt"
-	"tfserver/util/response"
+	"tfserver/internal/errmsg"
+	"tfserver/internal/model"
+	"tfserver/internal/repository"
+	"tfserver/internal/response"
+	"tfserver/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/hlandau/passlib.v1"

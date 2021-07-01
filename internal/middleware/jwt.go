@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"strings"
-	"tfserver/util/errmsg"
-	"tfserver/util/jwt"
-	"tfserver/util/response"
+	"tfserver/internal/errmsg"
+	"tfserver/internal/response"
+	"tfserver/pkg/jwt"
 
 	"github.com/gin-gonic/gin"
 )
